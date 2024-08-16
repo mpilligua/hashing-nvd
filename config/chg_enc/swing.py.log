@@ -1,0 +1,24 @@
+2024-08-16 16:59:02,607 Started
+wandb: Currently logged in as: pilligua2. Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.7 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.17.0
+wandb: Run data is saved locally in /data/users/mpilligua/hashing-nvd/wandb/run-20240816_165910-94i6rr0u
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run hashing-nvd_swing
+wandb: ⭐️ View project at https://wandb.ai/pilligua2/hypersprites
+wandb: 🚀 View run at https://wandb.ai/pilligua2/hypersprites/runs/94i6rr0u
+2024-08-16 16:59:16,357 Pre-training loop begins.
+pre-train loss: 0.4446217715740204
+pre-train loss: 0.03360455110669136
+pre-train loss: 0.03476854786276817
+pre-train loss: 0.019656125456094742
+pre-train loss: 0.008687684312462807
+pre-train loss: 0.46226966381073
+pre-train loss: 0.039307065308094025
+pre-train loss: 0.01637791097164154
+pre-train loss: 0.010361838154494762
+pre-train loss: 0.010874858126044273
+2024-08-16 16:59:32,035 Main training loop begins.
+Start evaluation.
+Generating:   0%|          | 0/25 [00:00<?, ?it/s]Generating:  12%|█▏        | 3/25 [00:00<00:01, 19.71it/s]Generating:  24%|██▍       | 6/25 [00:00<00:01, 12.70it/s]Generating:  36%|███▌      | 9/25 [00:00<00:01, 11.24it/s]Generating:  48%|████▊     | 12/25 [00:01<00:01, 10.44it/s]Generating:  60%|██████    | 15/25 [00:01<00:00, 10.23it/s]Generating:  72%|███████▏  | 18/25 [00:01<00:00, 10.08it/s]Generating:  84%|████████▍ | 21/25 [00:01<00:00, 10.05it/s]Generating:  96%|█████████▌| 24/25 [00:02<00:00,  9.97it/s]Generating: 100%|██████████| 25/25 [00:02<00:00,  9.83it/s]

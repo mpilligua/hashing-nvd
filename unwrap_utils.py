@@ -39,7 +39,7 @@ def resize_flow(flow, newh, neww):
 def load_input_data(
         resy, resx, maximum_number_of_frames,
         data_folder, use_mask_rcnn_bootstrapping,
-        filter_optical_flow):
+        filter_optical_flow, use_masks_gt = False):
     '''
     data structure:
     └- data_folder
@@ -56,7 +56,10 @@ def load_input_data(
     '''
     video_frames_dir = data_folder / 'video_frames'
     flow_dir = data_folder / 'flow'
-    mask_dirs = list((data_folder / 'masks').glob('*'))
+    # if use_masks_gt: 
+    mask_dirs = list((data_folder / 'gt_masks').glob('*'))
+    # else: 
+        # mask_dirs = list((data_folder / 'masks').glob('*'))
 
     input_files = sorted(list(video_frames_dir.glob('*.jpg')) + list(video_frames_dir.glob('*.png')))
 
@@ -81,8 +84,8 @@ def load_input_data(
         if use_mask_rcnn_bootstrapping:
             for j, mask_files in enumerate(mask_files_list):
                 mask = np.array(Image.open(str(mask_files[i]))).astype(np.float64) / 255.
-                mask = cv2.resize(mask, (resx, resy), cv2.INTER_NEAREST)
-                mask_frames[:, :, i, j] = torch.from_numpy(mask)
+                mask = cv2.resize(mask, (resx, resy))
+                mask_frames[:, :, i, 0] = torch.from_numpy(mask)
         video_frames[:, :, :, i] = torch.from_numpy(cv2.resize(im[:, :, :3], (resx, resy)))
         video_frames_dy[:-1, :, :, i] = video_frames[1:, :, :, i] - video_frames[:-1, :, :, i]
         video_frames_dx[:, :-1, :, i] = video_frames[:, 1:, :, i] - video_frames[:, :-1, :, i]
@@ -116,6 +119,7 @@ def load_input_data(
         else:
             optical_flows_mask[:, :, i, 0] = torch.ones_like(mask_flow)
             optical_flows_reverse_mask[:, :, j, 0] = torch.ones_like(mask_flow_reverse)
+    
     return optical_flows_mask, video_frames, optical_flows_reverse_mask, mask_frames, video_frames_dx, video_frames_dy, optical_flows_reverse, optical_flows
 
 
@@ -130,7 +134,7 @@ def get_tuples(number_of_frames, video_frames):
 
 def pre_train_mapping(
         model_F_mapping, frames_num, uv_mapping_scale,
-        resx, resy, rez, device, pretrain_iters=100):
+        resx, resy, rez, device, pretrain_iters=100, wandb=None):
     optimizer_mapping = optim.Adam(model_F_mapping.get_optimizer_list())
     for i in range(pretrain_iters):
         for f in range(frames_num):
@@ -154,6 +158,9 @@ def pre_train_mapping(
             optimizer_mapping.step()
         if i % 10 == 0:
             print(f"pre-train loss: {loss.item()}")
+            
+            wandb.log({'pre-train loss': loss.item(), 'video': int(0), 'layer': 0, 'iter': i})
+
     return model_F_mapping
 
 def save_video(video_frames, results_folder):

@@ -12,7 +12,9 @@ import matplotlib.image as mpimg
 
 
 def preprocess(args):
-    images = sorted((args.data_path / 'video_frames').glob('*.jpg'))
+    images = sorted((args.data_path).glob('*.jpg'))
+    print(f"Found {len(images)} images")
+    
     obj_name = args.object_name
     if obj_name == '': obj_name = args.class_name
     out_mask_dir = args.data_path / 'masks' / obj_name
@@ -32,6 +34,7 @@ def preprocess(args):
         # try:
         im = np.array(mpimg.imread(images[i]))
         outputs = predictor(im)
+        print(f"Frame {i} processed")
         if args.class_name == 'anything':
            try:
                 mask = outputs["instances"].pred_masks[0].cpu().numpy()

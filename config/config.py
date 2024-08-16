@@ -1,15 +1,16 @@
-results_folder_name = 'results'
-maximum_number_of_frames = 100
+results_folder_name = 'results/summer'
+maximum_number_of_frames = 25
 resx = 768
 resy = 432
 iters_num = 50000
 samples_batch = 10000
-data_folder = 'data/bear'
-uv_mapping_scales = [0.9, 0.6]
-pretrain_iter_number = 100
+data_folder = '/data/users/mpilligua/hypersprites/data/breakdance-flare/'
+uv_mapping_scales = [0.9, 0.9, 0.9, 0.6]
+pretrain_iter_number = 0
 load_checkpoint = False
 checkpoint_path = ''
-folder_suffix = 'test'
+folder_suffix = 'original_code'
+use_alpha_gt = False
 
 logger = dict(
     period = 500,
@@ -18,7 +19,7 @@ logger = dict(
     log_alpha = True)
 
 evaluation = dict(
-    interval = 5000,
+    interval = 300,
     samples_batch = 10000)
 
 losses = dict(
@@ -50,11 +51,11 @@ losses = dict(
         weight = 0.1))
 
 config_xyt = {
+    'otype': 'HashGrid',
+    'n_levels': 16,
     'base_resolution': 16,
     'log2_hashmap_size': 15,
     'n_features_per_level': 2,
-    'n_levels': 16,
-    'otype': 'HashGrid',
     'per_level_scale': 1.25}
 config_uv = {
     'base_resolution': 16,

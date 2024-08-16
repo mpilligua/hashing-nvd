@@ -117,6 +117,7 @@ class FlowMappingLoss():
         uv_backward = uv[indices_backward]
         uv_backward_match = model_F_mapping(xyt_backward_match.to(device))
         loss_backward = (uv_backward_match - uv_backward).norm(dim=1) * self.rez / (2 * uv_scale)
+        # print(indices_forward)
 
         if use_alpha:
             loss_forward = loss_forward * alpha[indices_forward].squeeze()

@@ -53,7 +53,8 @@ def main(cfg_filename, checkpoint_filename):
     model_F_mappings.load_state_dict(init_file["model_F_mappings_state_dict"])
     model_alpha.load_state_dict(init_file["model_F_alpha_state_dict"])
     start_iteration = init_file["iteration"]
-    save_dir = str(results_folder/('%06d'%start_iteration))
+    # save_dir = str(results_folder/('%06d'%start_iteration))
+    save_dir = str(results_folder/('eval'))
     eval(
         model_F_mappings, model_alpha,
         jif_all, video_frames, number_of_frames, rez, eval_cfg['samples_batch'],
@@ -62,7 +63,8 @@ def main(cfg_filename, checkpoint_filename):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_file', help='Path to the config file.', type=str)
-    parser.add_argument('checkpoint', help='Path to the checkpoint.', type=str)
+    # parser.add_argument('config_file', help='Path to the config file.', type=str)
+    # parser.add_argument('checkpoint', help='Path to the checkpoint.', type=str)
     args = parser.parse_args()
-    main(args.config_file, args.checkpoint)
+    # main(args.config_file, args.checkpoint)
+    main("/data/users/mpilligua/hashing-nvd/config/config_lucia_chg_enc.py", "/data/users/mpilligua/hypersprites-2step-training/weights/final_pred_params_tr.pth")

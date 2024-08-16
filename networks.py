@@ -1,7 +1,11 @@
 import torch
 from torch import nn
-import tinycudann as tcnn
 from torch.nn import functional as F
+import tinycudann as tcnn
+
+import sys
+sys.path.append('/data/users/mpilligua/hashing-nvd')
+from encoding import get_encoder
 
 class EncodingMLP(nn.Module):
 	'''
@@ -21,11 +25,26 @@ class EncodingMLP(nn.Module):
 		# Encoding can be turned off if the config is None. Same as 'Identity' encoding config.
 		if encoding_config is None:
 			encoding_config = {'otype': 'Identity'}
-		encoding = tcnn.Encoding(input_dim, encoding_config, dtype=torch.float32)
-		# TODO: record if encoding is grid.
+   
+		if encoding_config.get('module', 'tcnn') == 'tcnn':
+			self.tcnn = True
+			encoding = tcnn.Encoding(input_dim, encoding_config, dtype=torch.float32)
+			MLP_input_dim = encoding.n_output_dims
+
+		else: 
+			self.tcnn = False
+			encoding, MLP_input_dim = get_encoder(input_dim=input_dim, 
+                                        encoding=encoding_config['otype'],
+                                        num_levels=encoding_config['n_levels'], 
+                                        level_dim=encoding_config['n_features_per_level'], 
+                                        base_resolution=encoding_config['base_resolution'], 
+                                        log2_hashmap_size=encoding_config['log2_hashmap_size'], 
+                                        desired_resolution=encoding_config['desired_resolution'])
+		
+  		# TODO: record if encoding is grid.
 		self.grid_encode = True if encoding_config['otype'] in ['Grid', 'DenseGrid', 'HashGrid'] else False
 		modules.append(encoding)
-		MLP_input_dim = encoding.n_output_dims
+		self.encoding = encoding
 
 		# input layer
 		modules.append(nn.Linear(MLP_input_dim, num_neurons))
@@ -49,7 +68,7 @@ class EncodingMLP(nn.Module):
 
 	def forward(self, x):
 		# TODO: temp impl: [-1, 1] to [0, 1]
-		if self.grid_encode: x = x / 2 + 0.5
+		if self.grid_encode and self.tcnn: x = x / 2 + 0.5
 		return self.network(x)
 
 	def get_optimizer_list(self):
